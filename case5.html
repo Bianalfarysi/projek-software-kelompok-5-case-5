@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIMB Niaga Mobile Banking</title>
+    <style>
+        /* Reset dan styling dasar */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            max-width: 414px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow-x: hidden;
+        }
+        
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0055a5 0%, #003366 100%);
+            padding: 20px;
+            justify-content: center;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .login-logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+        
+        .login-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+        }
+        
+        .login-form {
+            background-color: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .form-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #003366;
+            text-align: center;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .input-field:focus {
+            border-color: #0055a5;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,85,165,0.1);
+        }
+        
+        .login-button {
+            background: linear-gradient(135deg, #0055a5 0%, #003366 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+        
+        /* Main App Styles (setelah login) */
+        .app-container {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0055a5 0%, #003366 100%);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Navigation */
+        .nav {
+            display: flex;
+            background-color: white;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        .nav-item.active {
+            color: #0055a5;
+            border-bottom: 2px solid #0055a5;
+            font-weight: 500;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 15px;
+            background-color: white;
+            min-height: calc(100vh - 130px);
+        }
+        
+        .page-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #003366;
+        }
+        
+        /* Homepage Styles */
+        .welcome-section {
+            margin-bottom: 20px;
+        }
+        
+        .welcome-text {
+            font-size: 18px;
+            color: #003366;
+            margin-bottom: 5px;
+        }
+        
+        .account-balance {
+            font-size: 24px;
+            font-weight: bold;
+            color: #003366;
+            margin-bottom: 20px;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 5px;
+            border-radius: 12px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-item:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .action-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0055a5;
+        }
+        
+        .action-name {
+            font-size: 12px;
+            text-align: center;
+            color: #333;
+        }
+        
+        .promo-section {
+            margin-top: 25px;
+        }
+        
+        .promo-card {
+            background: linear-gradient(135deg, #0055a5 0%, #003366 100%);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .promo-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .promo-description {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .promo-button {
+            background-color: white;
+            color: #0055a5;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Card Styles */
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #003366;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .form-input:focus {
+            border-color: #0055a5;
+            outline: none;
+        }
+        
+        /* Operator Selection */
+        .operator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .operator-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 5px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .operator-item:hover, .operator-item.selected {
+            border-color: #0055a5;
+            background-color: #f0f7ff;
+        }
+        
+        .operator-logo {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 5px;
+            background-color: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .operator-name {
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        /* Nominal Selection */
+        .nominal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .nominal-item {
+            padding: 12px 5px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nominal-item:hover, .nominal-item.selected {
+            border-color: #0055a5;
+            background-color: #f0f7ff;
+            color: #0055a5;
+        }
+        
+        .nominal-amount {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .nominal-bonus {
+            font-size: 11px;
+            color: #28a745;
+            margin-top: 2px;
+        }
+        
+        /* Payment Method */
+        .payment-methods {
+            margin-top: 15px;
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .payment-method:hover, .payment-method.selected {
+            border-color: #0055a5;
+            background-color: #f0f7ff;
+        }
+        
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .payment-details {
+            flex: 1;
+        }
+        
+        .payment-name {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        
+        .payment-desc {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .payment-balance {
+            font-size: 14px;
+            font-weight: 500;
+            color: #28a745;
+        }
+        
+        /* Button Styles */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: #0055a5;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #004488;
+        }
+        
+        .btn-primary:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #eeeeee;
+        }
+        
+        /* Status & Notifications */
+        .status-container {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .status-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .status-pending {
+            background-color: #fff3e0;
+            color: #ef6c00;
+            border: 1px solid #ffe0b2;
+        }
+        
+        .status-failed {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+        
+        .status-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        /* Transaction History */
+        .transaction-list {
+            margin-top: 20px;
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .transaction-details {
+            flex: 1;
+        }
+        
+        .transaction-amount {
+            font-weight: bold;
+        }
+        
+        .transaction-success {
+            color: #2e7d32;
+        }
+        
+        .transaction-failed {
+            color: #c62828;
+        }
+        
+        .transaction-pending {
+            color: #ef6c00;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: white;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #666;
+            cursor: pointer;
+        }
+        
+        .footer-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .footer-item.active {
+            color: #0055a5;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            margin-bottom: 16px;
+            color: #003366;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        
+        .modal-actions .btn {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 14px;
+        }
+        
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-10 {
+            margin-top: 10px;
+        }
+        
+        .mt-20 {
+            margin-top: 20px;
+        }
+        
+        .mb-10 {
+            margin-bottom: 10px;
+        }
+        
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-header">
+            <div class="login-logo">CIMB Niaga</div>
+            <div class="login-subtitle">Mobile Banking</div>
+        </div>
+        
+        <div class="login-form">
+            <h2 class="form-title">Masuk ke Akun Anda</h2>
+            
+            <div class="input-group">
+                <label class="input-label" for="username">Username</label>
+                <input type="text" id="username" class="input-field" placeholder="Masukkan username">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label" for="password">Password</label>
+                <input type="password" id="password" class="input-field" placeholder="Masukkan password">
+            </div>
+            
+            <button id="loginButton" class="login-button">Masuk</button>
+            
+            <div class="login-footer">
+                Lupa password? <a href="#" style="color:white">Klik di sini</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main App (setelah login) -->
+    <div id="appContainer" class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">CIMB Niaga</div>
+            <div class="user-profile">
+                <div class="avatar">US</div>
+                <span>USER</span>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="nav">
+            <div class="nav-item active" data-page="home">Beranda</div>
+            <div class="nav-item" data-page="transfer">Transfer</div>
+            <div class="nav-item" data-page="pembayaran">Pembayaran</div>
+            <div class="nav-item" data-page="investasi">Investasi</div>
+            <div class="nav-item" data-page="lainnya">Lainnya</div>
+        </div>
+        
+        <!-- Home Page -->
+        <div id="homePage" class="page active">
+            <div class="main-content">
+                <div class="welcome-section">
+                    <div class="welcome-text">Selamat datang, Gilang</div>
+                    <div class="account-balance">Rp 12.450.000</div>
+                </div>
+                
+                <div class="quick-actions">
+                    <div class="action-item" data-page="transfer">
+                        <div class="action-icon">⇄</div>
+                        <div class="action-name">Transfer</div>
+                    </div>
+                    <div class="action-item" data-page="pembayaran">
+                        <div class="action-icon">📱</div>
+                        <div class="action-name">Pulsa & Data</div>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-icon">💡</div>
+                        <div class="action-name">Listrik</div>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-icon">📺</div>
+                        <div class="action-name">TV & Internet</div>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-icon">🚗</div>
+                        <div class="action-name">BPJS</div>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-icon">🎓</div>
+                        <div class="action-name">Pendidikan</div>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-icon">💳</div>
+                        <div class="action-name">Kartu Kredit</div>
+                    </div>
+                    <div class="action-item" data-page="investasi">
+                        <div class="action-icon">📈</div>
+                        <div class="action-name">Investasi</div>
+                    </div>
+                </div>
+                
+                <div class="promo-section">
+                    <div class="card">
+                        <h2 class="card-title">Promo Spesial</h2>
+                        <div class="promo-card">
+                            <div class="promo-title">Cashback 20%</div>
+                            <div class="promo-description">Dapatkan cashback 20% untuk setiap pembelian pulsa dan paket data minimal Rp 50.000</div>
+                            <button class="promo-button">Lihat Detail</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pembayaran Page (Top-up Pulsa & Paket Data) -->
+        <div id="pembayaranPage" class="page">
+            <div class="main-content">
+                <h1 class="page-title">Top-up Pulsa & Paket Data</h1>
+                
+                <!-- Nomor Telepon Input -->
+                <div class="card">
+                    <div class="form-group">
+                        <label class="form-label" for="phoneNumber">Nomor Telepon</label>
+                        <input type="tel" id="phoneNumber" class="form-input" placeholder="Contoh: 08123456789" value="08123456789">
+                    </div>
+                </div>
+                
+                <!-- Operator Selection -->
+                <div class="card">
+                    <h2 class="card-title">Pilih Operator</h2>
+                    <div class="operator-grid">
+                        <div class="operator-item selected">
+                            <div class="operator-logo">TS</div>
+                            <span class="operator-name">Telkomsel</span>
+                        </div>
+                        <div class="operator-item">
+                            <div class="operator-logo">XL</div>
+                            <span class="operator-name">XL Axiata</span>
+                        </div>
+                        <div class="operator-item">
+                            <div class="operator-logo">IN</div>
+                            <span class="operator-name">Indosat</span>
+                        </div>
+                        <div class="operator-item">
+                            <div class="operator-logo">3</div>
+                            <span class="operator-name">Tri</span>
+                        </div>
+                        <div class="operator-item">
+                            <div class="operator-logo">SM</div>
+                            <span class="operator-name">Smartfren</span>
+                        </div>
+                        <div class="operator-item">
+                            <div class="operator-logo">AX</div>
+                            <span class="operator-name">Axis</span>
+                        </div>
+                        <div class="operator-item">
+                            <div class="operator-logo">BT</div>
+                            <span class="operator-name">Bolt</span>
+                        </div>
+                        <div class="operator-item">
+                            <div class="operator-logo">LA</div>
+                            <span class="operator-name">Lainnya</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pulsa Nominal Selection -->
+                <div class="card">
+                    <h2 class="card-title">Pilih Nominal Pulsa</h2>
+                    <div class="nominal-grid">
+                        <div class="nominal-item">
+                            <div class="nominal-amount">Rp 10.000</div>
+                        </div>
+                        <div class="nominal-item selected">
+                            <div class="nominal-amount">Rp 25.000</div>
+                            <div class="nominal-bonus">+500MB</div>
+                        </div>
+                        <div class="nominal-item">
+                            <div class="nominal-amount">Rp 50.000</div>
+                            <div class="nominal-bonus">+1GB</div>
+                        </div>
+                        <div class="nominal-item">
+                            <div class="nominal-amount">Rp 100.000</div>
+                            <div class="nominal-bonus">+2GB</div>
+                        </div>
+                        <div class="nominal-item">
+                            <div class="nominal-amount">Rp 150.000</div>
+                            <div class="nominal-bonus">+3GB</div>
+                        </div>
+                        <div class="nominal-item">
+                            <div class="nominal-amount">Rp 200.000</div>
+                            <div class="nominal-bonus">+5GB</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Paket Data Selection -->
+                <div class="card">
+                    <h2 class="card-title">Pilih Paket Data</h2>
+                    <div class="nominal-grid">
+                        <div class="nominal-item">
+                            <div class="nominal-amount">1GB/1H</div>
+                            <div class="nominal-bonus">Rp 10.000</div>
+                        </div>
+                        <div class="nominal-item">
+                            <div class="nominal-amount">3GB/7H</div>
+                            <div class="nominal-bonus">Rp 25.000</div>
+                        </div>
+                        <div class="nominal-item">
+                            <div class="nominal-amount">5GB/30H</div>
+                            <div class="nominal-bonus">Rp 50.000</div>
+                        </div>
+                        <div class="nominal-item">
+                            <div class="nominal-amount">10GB/30H</div>
+                            <div class="nominal-bonus">Rp 75.000</div>
+                        </div>
+                        <div class="nominal-item">
+                            <div class="nominal-amount">20GB/30H</div>
+                            <div class="nominal-bonus">Rp 100.000</div>
+                        </div>
+                        <div class="nominal-item">
+                            <div class="nominal-amount">50GB/30H</div>
+                            <div class="nominal-bonus">Rp 150.000</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Method Selection -->
+                <div class="card">
+                    <h2 class="card-title">Pilih Metode Pembayaran</h2>
+                    <div class="payment-methods">
+                        <div class="payment-method selected">
+                            <div class="payment-icon">C</div>
+                            <div class="payment-details">
+                                <div class="payment-name">CIMB Niaga - Tabungan</div>
+                                <div class="payment-desc">Rekening Utama</div>
+                            </div>
+                            <div class="payment-balance">Rp 5.250.000</div>
+                        </div>
+                        <div class="payment-method">
+                            <div class="payment-icon">O</div>
+                            <div class="payment-details">
+                                <div class="payment-name">OVO</div>
+                                <div class="payment-desc">Dompet Digital</div>
+                            </div>
+                            <div class="payment-balance">Rp 150.000</div>
+                        </div>
+                        <div class="payment-method">
+                            <div class="payment-icon">G</div>
+                            <div class="payment-details">
+                                <div class="payment-name">Gopay</div>
+                                <div class="payment-desc">Dompet Digital</div>
+                            </div>
+                            <div class="payment-balance">Rp 85.000</div>
+                        </div>
+                        <div class="payment-method">
+                            <div class="payment-icon">D</div>
+                            <div class="payment-details">
+                                <div class="payment-name">Dana</div>
+                                <div class="payment-desc">Dompet Digital</div>
+                            </div>
+                            <div class="payment-balance">Rp 200.000</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Summary -->
+                <div class="card">
+                    <h2 class="card-title">Ringkasan Pembayaran</h2>
+                    <div class="transaction-item">
+                        <div>Nominal</div>
+                        <div>Rp 25.000</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div>Biaya Admin</div>
+                        <div>Rp 0</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div>Metode Pembayaran</div>
+                        <div>CIMB Niaga Tabungan</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div>Total</div>
+                        <div class="transaction-amount">Rp 25.000</div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <button id="payButton" class="btn btn-primary mt-20">Bayar Sekarang</button>
+                <button id="historyButton" class="btn btn-secondary mt-10">Lihat Riwayat</button>
+                
+                <!-- Transaction History (Initially Hidden) -->
+                <div id="historySection" class="transaction-list hidden">
+                    <h2 class="card-title">Riwayat Transaksi</h2>
+                    <div class="transaction-item">
+                        <div class="transaction-details">
+                            <div>Telkomsel - 08123456789</div>
+                            <div>25 Juli 2023, 14:30 - OVO</div>
+                        </div>
+                        <div class="transaction-amount transaction-success">Rp 25.000</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-details">
+                            <div>XL Axiata - 08781234567</div>
+                            <div>24 Juli 2023, 09:15 - CIMB Niaga</div>
+                        </div>
+                        <div class="transaction-amount transaction-failed">Rp 50.000</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-details">
+                            <div>Indosat - 08567890123</div>
+                            <div>23 Juli 2023, 16:45 - Gopay</div>
+                        </div>
+                        <div class="transaction-amount transaction-success">Rp 100.000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Navigation -->
+        <div class="footer">
+            <div class="footer-item active" data-page="home">
+                <div class="footer-icon">🏠</div>
+                <span>Beranda</span>
+            </div>
+            <div class="footer-item" data-page="transfer">
+                <div class="footer-icon">💳</div>
+                <span>Transfer</span>
+            </div>
+            <div class="footer-item" data-page="pembayaran">
+                <div class="footer-icon">📱</div>
+                <span>Mobile</span>
+            </div>
+            <div class="footer-item" data-page="investasi">
+                <div class="footer-icon">📊</div>
+                <span>Investasi</span>
+            </div>
+            <div class="footer-item" data-page="lainnya">
+                <div class="footer-icon">👤</div>
+                <span>Profil</span>
+            </div>
+        </div>
+        
+        <!-- OTP Modal -->
+        <div id="otpModal" class="modal">
+            <div class="modal-content">
+                <h2 class="modal-title">Verifikasi OTP</h2>
+                <p>Kami telah mengirimkan kode OTP ke nomor +62 812-3456-789</p>
+                <div class="form-group mt-10">
+                    <input type="text" id="otpInput" class="form-input" placeholder="Masukkan 6 digit OTP" maxlength="6">
+                </div>
+                <div class="text-center mt-10">
+                    <a href="#" id="resendOtp">Kirim ulang OTP (45)</a>
+                </div>
+                <div class="modal-actions">
+                    <button id="cancelOtp" class="btn btn-secondary">Batal</button>
+                    <button id="confirmOtp" class="btn btn-primary">Verifikasi</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Success Modal -->
+        <div id="successModal" class="modal">
+            <div class="modal-content">
+                <div class="status-container status-success">
+                    <div class="status-icon">✓</div>
+                    <h3>Transaksi Berhasil!</h3>
+                    <p>Top-up pulsa untuk 08123456789 telah berhasil.</p>
+                    <p class="mt-10"><strong>Rp 25.000</strong></p>
+                    <p>Metode: CIMB Niaga Tabungan</p>
+                    <p>Ref: TRX202307251430001</p>
+                </div>
+                <div class="modal-actions">
+                    <button id="closeSuccess" class="btn btn-primary">Tutup</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Failed Modal -->
+        <div id="failedModal" class="modal">
+            <div class="modal-content">
+                <div class="status-container status-failed">
+                    <div class="status-icon">✗</div>
+                    <h3>Transaksi Gagal</h3>
+                    <p>Top-up pulsa untuk 08123456789 gagal diproses.</p>
+                    <p class="mt-10">Saldo Anda telah dikembalikan.</p>
+                </div>
+                <div class="modal-actions">
+                    <button id="closeFailed" class="btn btn-primary">Coba Lagi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loginPage = document.getElementById('loginPage');
+        const appContainer = document.getElementById('appContainer');
+        const loginButton = document.getElementById('loginButton');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        
+        const navItems = document.querySelectorAll('.nav-item');
+        const footerItems = document.querySelectorAll('.footer-item');
+        const actionItems = document.querySelectorAll('.action-item');
+        const pages = document.querySelectorAll('.page');
+        
+        const payButton = document.getElementById('payButton');
+        const historyButton = document.getElementById('historyButton');
+        const historySection = document.getElementById('historySection');
+        const otpModal = document.getElementById('otpModal');
+        const successModal = document.getElementById('successModal');
+        const failedModal = document.getElementById('failedModal');
+        const cancelOtp = document.getElementById('cancelOtp');
+        const confirmOtp = document.getElementById('confirmOtp');
+        const closeSuccess = document.getElementById('closeSuccess');
+        const closeFailed = document.getElementById('closeFailed');
+        const resendOtp = document.getElementById('resendOtp');
+        
+        // Login Functionality
+        loginButton.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (username === '' || password === '') {
+                alert('Username dan password harus diisi');
+                return;
+            }
+            
+            // Simulate login process
+            loginPage.style.display = 'none';
+            appContainer.style.display = 'flex';
+        });
+        
+        // Navigation Functionality
+        function navigateToPage(pageId) {
+            // Hide all pages
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            const targetPage = document.getElementById(pageId + 'Page');
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+            
+            // Update active nav items
+            navItems.forEach(item => {
+                if (item.getAttribute('data-page') === pageId) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Update active footer items
+            footerItems.forEach(item => {
+                if (item.getAttribute('data-page') === pageId) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+        
+        // Add event listeners to navigation items
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const pageId = item.getAttribute('data-page');
+                navigateToPage(pageId);
+            });
+        });
+        
+        // Add event listeners to footer items
+        footerItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const pageId = item.getAttribute('data-page');
+                navigateToPage(pageId);
+            });
+        });
+        
+        // Add event listeners to action items
+        actionItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const pageId = item.getAttribute('data-page');
+                if (pageId) {
+                    navigateToPage(pageId);
+                }
+            });
+        });
+        
+        // Operator Selection
+        const operatorItems = document.querySelectorAll('.operator-item');
+        operatorItems.forEach(item => {
+            item.addEventListener('click', () => {
+                operatorItems.forEach(op => op.classList.remove('selected'));
+                item.classList.add('selected');
+            });
+        });
+        
+        // Nominal Selection
+        const nominalItems = document.querySelectorAll('.nominal-item');
+        nominalItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const parentGrid = item.closest('.nominal-grid');
+                parentGrid.querySelectorAll('.nominal-item').forEach(ni => {
+                    ni.classList.remove('selected');
+                });
+                item.classList.add('selected');
+            });
+        });
+        
+        // Payment Method Selection
+        const paymentMethods = document.querySelectorAll('.payment-method');
+        paymentMethods.forEach(method => {
+            method.addEventListener('click', () => {
+                paymentMethods.forEach(pm => pm.classList.remove('selected'));
+                method.classList.add('selected');
+                
+                // Update payment method in summary
+                updatePaymentSummary();
+            });
+        });
+        
+        function updatePaymentSummary() {
+            const selectedMethod = document.querySelector('.payment-method.selected .payment-name').textContent;
+            // In a real app, you would update the summary section
+            console.log('Payment method changed to:', selectedMethod);
+        }
+        
+        // Payment Process
+        payButton.addEventListener('click', () => {
+            otpModal.style.display = 'flex';
+        });
+        
+        // History Toggle
+        historyButton.addEventListener('click', () => {
+            historySection.classList.toggle('hidden');
+            historyButton.textContent = historySection.classList.contains('hidden') 
+                ? 'Lihat Riwayat' 
+                : 'Sembunyikan Riwayat';
+        });
+        
+        // OTP Modal Actions
+        cancelOtp.addEventListener('click', () => {
+            otpModal.style.display = 'none';
+        });
+        
+        confirmOtp.addEventListener('click', () => {
+            otpModal.style.display = 'none';
+            // Simulate API call with 70% success rate
+            if (Math.random() > 0.3) {
+                successModal.style.display = 'flex';
+            } else {
+                failedModal.style.display = 'flex';
+            }
+        });
+        
+        // Close Modals
+        closeSuccess.addEventListener('click', () => {
+            successModal.style.display = 'none';
+        });
+        
+        closeFailed.addEventListener('click', () => {
+            failedModal.style.display = 'none';
+        });
+        
+        // Resend OTP
+        let countdown = 45;
+        resendOtp.addEventListener('click', (e) => {
+            e.preventDefault();
+            countdown = 45;
+            updateResendText();
+            alert('Kode OTP telah dikirim ulang');
+        });
+        
+        function updateResendText() {
+            if (countdown > 0) {
+                resendOtp.textContent = `Kirim ulang OTP (${countdown})`;
+                resendOtp.style.pointerEvents = 'none';
+                resendOtp.style.color = '#999';
+                countdown--;
+                setTimeout(updateResendText, 1000);
+            } else {
+                resendOtp.textContent = 'Kirim ulang OTP';
+                resendOtp.style.pointerEvents = 'auto';
+                resendOtp.style.color = '#0055a5';
+            }
+        }
+        
+        // Initialize resend OTP countdown
+        updateResendText();
+        
+        // Auto login for demo purposes (remove in production)
+        window.addEventListener('load', () => {
+            // Uncomment the line below to skip login for demo
+            // loginButton.click();
+        });
+    </script>
+</body>
+</html>
